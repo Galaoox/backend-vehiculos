@@ -24,7 +24,7 @@ async function bootstrap() {
     const port = configService.get('PORT');
 
     const config = new DocumentBuilder()
-        .setTitle('Centro recreacional api')
+        .setTitle('Backend vehiculos api')
         .setDescription('')
         .setVersion('1.0')
         .addBearerAuth()

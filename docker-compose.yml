@@ -11,4 +11,4 @@ services:
             MYSQL_ROOT_PASSWORD: example
             MYSQL_DATABASE: example
         volumes:
-            -  ~/centro-recreacional-back-data:/var/lib/mysql
+            -  ~/backend-vehiculos-data:/var/lib/mysql
