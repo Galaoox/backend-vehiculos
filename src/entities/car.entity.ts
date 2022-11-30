@@ -1,4 +1,4 @@
-import { ColumnNumericTransformer } from '@utils/column-numeric-transformer.utility';
+import { ColumnNumericTransformer } from "@utils/column-numeric-transformer.utility";
 import {
     Entity,
     Column,
@@ -7,10 +7,10 @@ import {
     UpdateDateColumn,
     DeleteDateColumn,
     ManyToOne,
-} from 'typeorm';
-import { Brand } from '@entities/brand.entity';
-import { Line } from './line.entity';
-import { State } from './state.entity';
+} from "typeorm";
+import { Brand } from "@entities/brand.entity";
+import { Line } from "./line.entity";
+import { State } from "./state.entity";
 
 @Entity()
 export class Car {
@@ -28,7 +28,7 @@ export class Car {
     })
     image: string;
 
-    @Column('numeric', {
+    @Column("numeric", {
         precision: 16,
         scale: 2,
         transformer: new ColumnNumericTransformer(),
@@ -51,15 +51,15 @@ export class Car {
     state: State;
 
     @CreateDateColumn({
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP(6)',
+        type: "timestamp",
+        default: () => "CURRENT_TIMESTAMP(6)",
     })
     public created_at: Date;
 
     @UpdateDateColumn({
-        type: 'timestamp',
-        default: () => 'CURRENT_TIMESTAMP(6)',
-        onUpdate: 'CURRENT_TIMESTAMP(6)',
+        type: "timestamp",
+        default: () => "CURRENT_TIMESTAMP(6)",
+        onUpdate: "CURRENT_TIMESTAMP(6)",
     })
     public updated_at: Date;
 

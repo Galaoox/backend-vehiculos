@@ -8,15 +8,13 @@ export class InputCarDto {
         maxLength: 50,
         nullable: false,
     })
-    nombre: string;
+    name: string;
 
     @IsNotEmpty()
-    @MaxLength(200)
     @ApiProperty({
-        maxLength: 200,
         nullable: false,
     })
-    descripcion: string;
+    year: number;
 
     @IsNotEmpty()
     @ApiProperty({
@@ -28,5 +26,17 @@ export class InputCarDto {
     @ApiProperty({
         nullable: false,
     })
-    categoriaMenuId: number;
+    brandId: number;
+
+    @IsNotEmpty()
+    @ApiProperty({
+        nullable: false,
+    })
+    stateId: number;
+
+    @IsNotEmpty()
+    @ApiProperty({
+        nullable: false,
+    })
+    lineId: number;
 }

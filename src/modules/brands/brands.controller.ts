@@ -10,17 +10,17 @@ import {
     Put,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { CarDto } from "./dto/car.dto";
-import { CarsService } from "./cars.service";
-import { InputCarDto } from "./dto/input-car.dto";
+import { BrandDto } from "./dto/brand.dto";
+import { BrandsService } from "./brands.service";
+import { InputBrandDto } from "./dto/input-brand.dto";
 
-@ApiTags("Cars")
-@Controller("cars")
-export class CarsController {
-    constructor(private service: CarsService) {}
+@ApiTags("Brands")
+@Controller("brands")
+export class BrandsController {
+    constructor(private service: BrandsService) {}
 
     @Post()
-    async create(@Body() data: InputCarDto): Promise<CarDto> {
+    async create(@Body() data: InputBrandDto): Promise<BrandDto> {
         try {
             return await this.service.create(data);
         } catch (error) {
@@ -30,12 +30,12 @@ export class CarsController {
     }
 
     @Get()
-    async findAll(): Promise<CarDto[]> {
+    async findAll(): Promise<BrandDto[]> {
         return await this.service.findAll();
     }
 
     @Get("findOne/:id")
-    async findOne(@Param("id") id: number): Promise<CarDto> {
+    async findOne(@Param("id") id: number): Promise<BrandDto> {
         try {
             return await this.service.findOne(id);
         } catch (error) {
@@ -45,7 +45,7 @@ export class CarsController {
     }
 
     @Put(":id")
-    async update(@Param("id") id: number, @Body() data: InputCarDto) {
+    async update(@Param("id") id: number, @Body() data: InputBrandDto) {
         try {
             await this.service.update(id, data);
         } catch (error) {
@@ -58,16 +58,6 @@ export class CarsController {
         try {
             await this.service.remove(id);
         } catch (error) {
-            throw new NotFoundException();
-        }
-    }
-
-    @Post("upload/:id")
-    async upload(@Body() data, @Param("id") id: number) {
-        try {
-            await this.service.uploadImage(id, data.image);
-        } catch (error) {
-            console.log(error);
             throw new NotFoundException();
         }
     }

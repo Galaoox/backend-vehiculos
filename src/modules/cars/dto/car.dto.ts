@@ -1,15 +1,13 @@
-import { InputCategoriaMenuDto } from '@modules/categorias-menu/dto/input-categoria-menu.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { BrandDto } from "@modules/brands/dto/brand.dto";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CarDto {
     @ApiProperty()
     id: number;
     @ApiProperty()
-    nombre: string;
+    year: number;
     @ApiProperty()
-    descripcion: string;
+    averagePrice: number;
     @ApiProperty()
-    valor: number;
-    @ApiProperty()
-    categoriaMenu: Partial<InputCategoriaMenuDto>;
+    brand: Partial<BrandDto>;
 }
