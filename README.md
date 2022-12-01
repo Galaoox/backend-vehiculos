@@ -45,8 +45,8 @@ Con el objetivo de facilitar las pruebas hay un archivo llamado .env.example don
 Pasos para ejecutar el proyecto:
 
 Si se ejecuta por primera vez el proyecto es necesario que ejecutar los seeder, con el siguiente comando:
-      ```bash
-      seed:run
+      ```
+      yarn seed:run
       ```
 Despues de haber ejecutado el anterior comando se ejecuta el siguiente:
 ```bash
