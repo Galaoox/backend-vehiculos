@@ -1,18 +1,15 @@
 version: '3.8'
+# networks:
+#     netback:
+#         driver: bridge
 
 services:
-    backend:
-        container_name: nestjs-vehiculos
-        build: .
-        depends_on:
-            - database
-        networks:
-            - backend
-
     database:
         image: mysql
         command: --default-authentication-plugin=mysql_native_password
         restart: always
+        expose:
+            - '3306'
         ports:
             - 3306:3306
         environment:
@@ -20,9 +17,17 @@ services:
             MYSQL_DATABASE: example
         # volumes:
         #     - ~/backend-vehiculos-data:/var/lib/mysql
-        networks:
-            - backend
+        # networks:
+        #     - netback
 
-networks:
-    backend:
-        driver: 'bridge'
+    # backend:
+    #     container_name: nestjs-vehiculos
+    #     build: .
+    #     command: bash -c 'while !</dev/tcp/db/3306; do sleep 1; done; start:prod'
+    #     ports:
+    #         - 4300:4300
+    #     depends_on:
+    #         - database
+    #     networks:
+    #         - netback
+

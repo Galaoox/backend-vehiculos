@@ -1,7 +1,7 @@
 FROM node
 WORKDIR /app
-COPY package.json .
-COPY yarn.lock .
+COPY . /
+
 RUN yarn
 RUN yarn build
 RUN yarn seed:run
