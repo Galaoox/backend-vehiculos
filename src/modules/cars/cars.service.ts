@@ -49,7 +49,6 @@ export class CarsService {
         if (filters.brandId) where['brand'] = { id: filters.brandId };
         if (filters.lineId) where['line'] = { id: filters.lineId };
         if (filters.stateId) where['state'] = { id: filters.stateId };
-        console.log(where, filters);
 
         const [results, total] = await this.repository.findAndCount({
             relations: ['brand', 'line', 'state'],

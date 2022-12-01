@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 interface Options {
     limit: string;
     page: string;
-    id: string;
 }
 
 export class FilterSearchDto {
