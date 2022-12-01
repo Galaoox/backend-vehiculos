@@ -2,13 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class InputCarDto {
-    @IsNotEmpty()
-    @MaxLength(50)
-    @ApiProperty({
-        maxLength: 50,
-        nullable: false,
-    })
-    name: string;
 
     @IsNotEmpty()
     @ApiProperty({
@@ -20,7 +13,7 @@ export class InputCarDto {
     @ApiProperty({
         nullable: false,
     })
-    valor: number;
+    averagePrice: number;
 
     @IsNotEmpty()
     @ApiProperty({
