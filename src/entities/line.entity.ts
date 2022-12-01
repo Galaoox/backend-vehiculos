@@ -6,8 +6,10 @@ import {
     UpdateDateColumn,
     DeleteDateColumn,
     OneToMany,
-} from "typeorm";
-import { Car } from "@entities/car.entity";
+    ManyToOne,
+} from 'typeorm';
+import { Car } from '@entities/car.entity';
+import { Brand } from './brand.entity';
 
 @Entity()
 export class Line {
@@ -23,16 +25,21 @@ export class Line {
     @OneToMany(() => Car, (car) => car.line)
     cars: Car[];
 
+    @ManyToOne(() => Brand, (brand) => brand.lines, {
+        cascade: true,
+    })
+    brand: Brand;
+
     @CreateDateColumn({
-        type: "timestamp",
-        default: () => "CURRENT_TIMESTAMP(6)",
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP(6)',
     })
     public created_at: Date;
 
     @UpdateDateColumn({
-        type: "timestamp",
-        default: () => "CURRENT_TIMESTAMP(6)",
-        onUpdate: "CURRENT_TIMESTAMP(6)",
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP(6)',
+        onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     public updated_at: Date;
 

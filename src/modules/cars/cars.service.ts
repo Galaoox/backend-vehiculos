@@ -1,17 +1,28 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { CarDto } from "./dto/car.dto";
-import { InputCarDto } from "./dto/input-car.dto";
-import { CloudinaryService } from "@modules/cloudinary/cloudinary.service";
-import { Car } from "@entities/car.entity";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CarDto } from './dto/car.dto';
+import { InputCarDto } from './dto/input-car.dto';
+import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
+import { Car } from '@entities/car.entity';
+import { FilterSearchDto } from './dto/filter-search.dto';
+import { SearchResponseDto } from './dto/search-response.dto';
+import { State } from '@entities/state.entity';
+import { Brand } from '@entities/brand.entity';
+import { Line } from '@entities/line.entity';
 
 @Injectable()
 export class CarsService {
     constructor(
         @InjectRepository(Car)
         private repository: Repository<Car>,
-        private cloudinary: CloudinaryService
+        private cloudinary: CloudinaryService,
+        @InjectRepository(State)
+        private stateRepository: Repository<State>,
+        @InjectRepository(Brand)
+        private brandRepository: Repository<Brand>,
+        @InjectRepository(Line)
+        private lineRepository: Repository<Line>,
     ) {}
 
     async create(data: InputCarDto): Promise<CarDto> {
@@ -23,57 +34,81 @@ export class CarsService {
         });
     }
 
-    async update(id: number, data: InputCarDto): Promise<void> {
-        const dataToUpdate = await this.repository.findOne(id);
-        if (!dataToUpdate) throw new Error("element doesn't exist");
-        this.repository.save({
-            ...dataToUpdate,
-            ...data,
-            brand: { id: data.brandId },
-            line: { id: data.lineId },
-            state: { id: data.stateId },
-        });
-    }
-
-    async findAll(): Promise<CarDto[]> {
-        const data = await this.repository.find({
-            relations: ["brand", "line", "state"],
-        });
-        const promises = await data.map(async (item) => {
+    private async setImage(data: Car[]) {
+        return await data.map(async (item) => {
             return {
                 ...item,
-                imagen: await this.cloudinary.getUrlImage(item.image),
+                image: await this.cloudinary.getUrlImage(item.image),
             };
         });
-        const result = await Promise.all(promises);
-        return result;
     }
 
-    async findOne(id: number): Promise<CarDto> {
-        const data = await this.repository.findOne(id, {
-            relations: ["categoriaMenu"],
+    async search(filters: FilterSearchDto): Promise<SearchResponseDto> {
+        const where = {};
+        if (filters.year) where['year'] = filters.year;
+        if (filters.brandId) where['brand'] = { id: filters.brandId };
+        if (filters.lineId) where['line'] = { id: filters.lineId };
+        if (filters.stateId) where['state'] = { id: filters.stateId };
+        console.log(where, filters);
+
+        const [results, total] = await this.repository.findAndCount({
+            relations: ['brand', 'line', 'state'],
+            take: Number(filters.options.limit),
+            skip:
+                (Number(filters.options.page) - 1) *
+                Number(filters.options.limit),
+            where: where,
         });
-        data.image = await this.cloudinary.getUrlImage(data.image);
-        if (!data) throw new Error("element not found");
-        return data;
+        const promises = await this.setImage(results);
+        return {
+            data: await Promise.all(promises),
+            info: this.calcPagination(
+                total,
+                Number(filters.options.limit),
+                Number(filters.options.page),
+            ),
+        };
     }
 
-    async remove(id: number): Promise<any> {
-        return this.repository.softDelete(id);
-    }
-
-    async uploadImage(id: number, imagen: string): Promise<void> {
-        const dataToUpdate = await this.repository.findOne(id);
+    async uploadImage(id: number, image: string): Promise<void> {
+        const dataToUpdate = await this.repository.findOne({
+            where: { id },
+        });
         if (!dataToUpdate) throw new Error("Elemento Menu doesn't exist");
         if (dataToUpdate.image) {
             await this.cloudinary.deleteImage(dataToUpdate.image);
         }
         const result = await this.cloudinary
-            .uploadImageBase64(imagen)
+            .uploadImageBase64(image)
             .catch(() => {
-                throw new BadRequestException("Invalid file type.");
+                throw new BadRequestException('Invalid file type.');
             });
         dataToUpdate.image = result.public_id;
         this.repository.save(dataToUpdate);
+    }
+
+    async getLists() {
+        return {
+            listBrands: await this.brandRepository.find(),
+            listStates: await this.stateRepository.find(),
+        };
+    }
+
+    async getLineByBrand(id: number) {
+        return await this.lineRepository.find({
+            where: { brand: { id } },
+        });
+    }
+
+    private calcPagination(total: number, limit: number, page: number) {
+        const maxPage = Math.ceil(total / limit);
+        const next = page + 1 > maxPage ? page : page + 1;
+        return {
+            total,
+            limit,
+            page,
+            maxPage,
+            next,
+        };
     }
 }

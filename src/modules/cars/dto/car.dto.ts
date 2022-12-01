@@ -1,5 +1,4 @@
-import { BrandDto } from "@modules/brands/dto/brand.dto";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CarDto {
     @ApiProperty()
@@ -9,5 +8,19 @@ export class CarDto {
     @ApiProperty()
     averagePrice: number;
     @ApiProperty()
-    brand: Partial<BrandDto>;
+    brand: {
+        id: number;
+        name: string;
+    };
+    @ApiProperty()
+    line: {
+        id: number;
+        name: string;
+    };
+
+    @ApiProperty()
+    state: {
+        id: number;
+        name: string;
+    };
 }

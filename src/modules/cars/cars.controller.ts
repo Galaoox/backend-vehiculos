@@ -2,20 +2,20 @@ import {
     BadRequestException,
     Body,
     Controller,
-    Delete,
     Get,
     NotFoundException,
     Param,
     Post,
-    Put,
-} from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { CarDto } from "./dto/car.dto";
-import { CarsService } from "./cars.service";
-import { InputCarDto } from "./dto/input-car.dto";
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { CarDto } from './dto/car.dto';
+import { CarsService } from './cars.service';
+import { InputCarDto } from './dto/input-car.dto';
+import { FilterSearchDto } from './dto/filter-search.dto';
+import { SearchResponseDto } from './dto/search-response.dto';
 
-@ApiTags("Cars")
-@Controller("cars")
+@ApiTags('Cars')
+@Controller('cars')
 export class CarsController {
     constructor(private service: CarsService) {}
 
@@ -29,46 +29,43 @@ export class CarsController {
         }
     }
 
-    @Get()
-    async findAll(): Promise<CarDto[]> {
-        return await this.service.findAll();
-    }
-
-    @Get("findOne/:id")
-    async findOne(@Param("id") id: number): Promise<CarDto> {
+    @Post('search/')
+    async findOne(@Body() data: FilterSearchDto): Promise<SearchResponseDto> {
         try {
-            return await this.service.findOne(id);
+            return await this.service.search(data);
         } catch (error) {
             console.error(error);
-            throw new NotFoundException();
+            throw new BadRequestException(error);
         }
     }
 
-    @Put(":id")
-    async update(@Param("id") id: number, @Body() data: InputCarDto) {
-        try {
-            await this.service.update(id, data);
-        } catch (error) {
-            throw new NotFoundException();
-        }
-    }
-
-    @Delete(":id")
-    async remove(@Param("id") id: number) {
-        try {
-            await this.service.remove(id);
-        } catch (error) {
-            throw new NotFoundException();
-        }
-    }
-
-    @Post("upload/:id")
-    async upload(@Body() data, @Param("id") id: number) {
+    @Post('upload/:id')
+    async upload(@Body() data, @Param('id') id: number) {
         try {
             await this.service.uploadImage(id, data.image);
         } catch (error) {
             console.log(error);
             throw new NotFoundException();
+        }
+    }
+
+    @Get('getLinesByBrand/:id')
+    async getLinesByBrand(@Param('id') id: number) {
+        try {
+            return await this.service.getLineByBrand(id);
+        } catch (error) {
+            console.error(error);
+            throw new BadRequestException();
+        }
+    }
+
+    @Get('getLists/')
+    async getLists() {
+        try {
+            return await this.service.getLists();
+        } catch (error) {
+            console.error(error);
+            throw new BadRequestException();
         }
     }
 }
