@@ -21,7 +21,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 database: configService.get('DB_DATABASE'),
                 entities: [Brand, State, Line, Car],
                 synchronize: true,
-                ssl: true,
             }),
             inject: [ConfigService],
         }),
